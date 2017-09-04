@@ -54,7 +54,7 @@ class BotConfig {
 
     val START_MESSAGE_LINK_TEXT = "Вот, кстати мой канал: КиноLenta"
     val CHANNEL_LINK = "https://t.me/lentakino"
-    val PLACEHOLDER = "В канал!"
+    val PLACEHOLDER = "Перейти!"
     val SLEEP_BEFORE_LINK_MS = 20000L
 
     @PostConstruct
