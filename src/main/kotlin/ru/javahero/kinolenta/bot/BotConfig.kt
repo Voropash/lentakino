@@ -10,9 +10,9 @@ class BotConfig {
 
     private val botOptions: DefaultBotOptions = DefaultBotOptions()
 
-    val BOT_TOKEN = "BOT_TOKEN"
-    val BOT_USER = "BOT_USER"
-    val CHANNEL_NAME = "@channel"
+    val BOT_TOKEN = "414346958:AAHBLqJor35PZOa1ToWm__3EY9ASOqNh1v4"
+    val BOT_USER = "test_prod_bot"
+    val CHANNEL_NAME = "@test_prod"
     val LIKE_VALUE = "LIKE"
     val DISLIKE_VALUE = "DISLIKE"
     val ADMIN_CHAT_ID = 59718526L

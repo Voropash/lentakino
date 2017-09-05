@@ -24,13 +24,12 @@ class ReviewSendProcessor(val reviewRepository: ReviewRepository,
                           val reviewRatingRepository: ReviewRatingRepository,
                           val botConfig: BotConfig,
                           val objectMapper: ObjectMapper,
-                          val likeKeyboard: LikeKeyboard) {
+                          val likeKeyboard: LikeKeyboard,
+                          val botOperations: BotOperations) {
 
     private val log = LoggerFactory.getLogger(ReviewSendProcessor::class.java)
 
-    fun sendNewReviewToChannel(sendPhoto: KFunction1<@ParameterName(name = "sendPhoto") SendPhoto, Message>,
-                               sendMessage: KFunction1<@ParameterName(name = "sendMessage") SendMessage, Message>,
-                               deleteMessage: KFunction1<@ParameterName(name = "deleteMessage") DeleteMessage, Boolean>): Message? {
+    fun sendNewReviewToChannel(): Message? {
         val page = reviewRepository.findAll(PageRequest(1, 1))
         val review = page.elementAtOrNull(0)
 
@@ -44,7 +43,7 @@ class ReviewSendProcessor(val reviewRepository: ReviewRepository,
         sendPhotoQuery.setNewPhoto(photo)
         var sendPhotoMessage: Message? = null
         try {
-            sendPhotoMessage = sendPhoto(sendPhotoQuery)
+            sendPhotoMessage = botOperations.sendPhoto(sendPhotoQuery)
         } catch (e: TelegramApiException) {
             log.error("Error sending image", e)
         }
@@ -132,7 +131,7 @@ class ReviewSendProcessor(val reviewRepository: ReviewRepository,
         val keyboardMarkup = likeKeyboard.buildLikeKeyboard(1, 1)
         sendMessageQuery.replyMarkup = keyboardMarkup
         try {
-            val result = sendMessage(sendMessageQuery)
+            val result = botOperations.sendMessage(sendMessageQuery)
             val messageId = result.messageId
 
             reviewTextRepository.save(ReviewText(messageId, messageText))
@@ -150,7 +149,7 @@ class ReviewSendProcessor(val reviewRepository: ReviewRepository,
                 val deleteMessageQuery = DeleteMessage()
                 deleteMessageQuery.chatId = botConfig.CHANNEL_NAME
                 deleteMessageQuery.messageId = photoMessageId
-                deleteMessage(deleteMessageQuery)
+                botOperations.deleteMessage(deleteMessageQuery)
             } catch (e: Exception) {
                 e.printStackTrace()
                 log.error("Error when delete photo message", e)

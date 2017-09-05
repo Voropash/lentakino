@@ -14,15 +14,14 @@ import java.io.StringWriter
 
 
 @Component
-class MessageFromAdminSendProcessor(val messageToAdminSendProcessor: MessageToAdminSendProcessor) {
+class MessageFromAdminSendProcessor(val messageToAdminSendProcessor: MessageToAdminSendProcessor,
+                                    val botOperations: BotOperations) {
 
     private val log = LoggerFactory.getLogger(MessageFromAdminSendProcessor::class.java)
 
     fun send(requestMessage: Message,
-             sendMessage: KFunction1<@ParameterName(name = "sendMessage") SendMessage, Message>,
              sendSticker: KFunction1<@ParameterName(name = "sendSticker") SendSticker, Message>,
-             sendDocument: KFunction1<@ParameterName(name = "sendDocument") SendDocument, Message>,
-             sendPhoto: KFunction1<@ParameterName(name = "sendPhoto") SendPhoto, Message>) {
+             sendDocument: KFunction1<@ParameterName(name = "sendDocument") SendDocument, Message>) {
 
         val replyToMessage = requestMessage.replyToMessage
         val forwardFrom = replyToMessage.forwardFrom
@@ -43,7 +42,7 @@ class MessageFromAdminSendProcessor(val messageToAdminSendProcessor: MessageToAd
                 sendPhotoQuery.photo = photo?.fileId
                 sendPhotoQuery.caption = requestMessage.caption
                 sendPhotoQuery.chatId = stringUserId
-                sendPhoto(sendPhotoQuery)
+                botOperations.sendPhoto(sendPhotoQuery)
             }
             val sticker = requestMessage.sticker
             if (sticker != null) {
@@ -57,25 +56,24 @@ class MessageFromAdminSendProcessor(val messageToAdminSendProcessor: MessageToAd
                 sendMessageQuery.enableMarkdown(true)
                 sendMessageQuery.chatId = stringUserId
                 sendMessageQuery.text = requestMessage.text
-                sendMessage(sendMessageQuery)
+                botOperations.sendMessage(sendMessageQuery)
             }
 
         } catch (e: Exception) {
             e.printStackTrace()
             log.error("send message error", e)
-            sendSendMessageError(e, sendMessage)
+            sendSendMessageError(e)
         }
     }
 
-    private fun sendSendMessageError(e: Exception,
-                                     sendMessage: KFunction1<@ParameterName(name = "sendMessage") SendMessage, Message>) {
+    private fun sendSendMessageError(e: Exception) {
         try {
-            messageToAdminSendProcessor.sendMessage("send message error: " + e, sendMessage)
+            messageToAdminSendProcessor.sendMessage("send message error: " + e)
             val sw = StringWriter()
             val pw = PrintWriter(sw)
             e.printStackTrace(pw)
             val sStackTrace = sw.toString()
-            messageToAdminSendProcessor.sendMessage("```$sStackTrace```", sendMessage)
+            messageToAdminSendProcessor.sendMessage("```$sStackTrace```")
         } catch (e: Exception) {
             e.printStackTrace()
             log.error("send error message error", e)

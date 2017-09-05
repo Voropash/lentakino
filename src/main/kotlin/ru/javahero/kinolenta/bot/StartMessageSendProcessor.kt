@@ -9,22 +9,22 @@ import kotlin.reflect.KFunction1
 
 @Component
 class StartMessageSendProcessor(val botConfig: BotConfig,
-                                val urlKeyboard: UrlKeyboard) {
+                                val urlKeyboard: UrlKeyboard,
+                                val botOperations: BotOperations) {
 
     private val log = LoggerFactory.getLogger(StartMessageSendProcessor::class.java)
 
-    fun send(requestMessage: Message,
-             sendMessage: KFunction1<@ParameterName(name = "sendMessage") SendMessage, Message>) {
+    fun send(requestMessage: Message) {
         val chatId = requestMessage.chatId
         val sendMessageQuery = SendMessage()
         sendMessageQuery.enableHtml(true)
         sendMessageQuery.chatId = chatId?.toString()
         sendMessageQuery.text = botConfig.START_MESSAGE_TEXT
         try {
-            sendMessage(sendMessageQuery)
+            botOperations.sendMessage(sendMessageQuery)
             Thread({
                 Thread.sleep(botConfig.SLEEP_BEFORE_LINK_MS)
-                sendLink(sendMessageQuery, sendMessage)
+                sendLink(sendMessageQuery)
             }).start()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -32,12 +32,11 @@ class StartMessageSendProcessor(val botConfig: BotConfig,
         }
     }
 
-    fun sendLink(sendMessageQuery: SendMessage,
-                 sendMessage: KFunction1<@ParameterName(name = "sendMessage") SendMessage, Message>) {
+    fun sendLink(sendMessageQuery: SendMessage) {
         sendMessageQuery.text = botConfig.START_MESSAGE_LINK_TEXT
         sendMessageQuery.replyMarkup = urlKeyboard.buildUrlKeyboard(botConfig.CHANNEL_LINK, botConfig.PLACEHOLDER)
         try {
-            sendMessage(sendMessageQuery)
+            botOperations.sendMessage(sendMessageQuery)
         } catch (e: Exception) {
             e.printStackTrace()
             log.error("send message error", e)
