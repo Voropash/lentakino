@@ -5,16 +5,15 @@ import org.springframework.stereotype.Component
 import org.telegram.telegrambots.api.methods.send.SendMessage
 import org.telegram.telegrambots.api.objects.Message
 import ru.javahero.kinolenta.bot.util.keyboard.UrlKeyboard
-import kotlin.reflect.KFunction1
 
 @Component
 class MessageWithUrlSendProcessor(val botConfig: BotConfig,
-                                  val urlKeyboard: UrlKeyboard) {
+                                  val urlKeyboard: UrlKeyboard,
+                                  val botOperations: BotOperations) {
 
     private val log = LoggerFactory.getLogger(MessageWithUrlSendProcessor::class.java)
 
-    fun send(requestMessage: Message,
-             sendMessage: KFunction1<@ParameterName(name = "sendMessage") SendMessage, Message>) {
+    fun send(requestMessage: Message) {
         var linkString = requestMessage.text
         linkString = linkString.replace("/sendWithUrl" + " ", "")
         val indexOfSeparator = linkString.indexOf(" ")
@@ -33,7 +32,7 @@ class MessageWithUrlSendProcessor(val botConfig: BotConfig,
         sendMessageQuery.enableHtml(true)
         sendMessageQuery.replyMarkup = keyboardMarkup
         try {
-            sendMessage(sendMessageQuery)
+            botOperations.sendMessage(sendMessageQuery)
         } catch (e: Exception) {
             e.printStackTrace()
             log.error("send message error", e)

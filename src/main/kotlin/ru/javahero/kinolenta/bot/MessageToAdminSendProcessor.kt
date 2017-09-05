@@ -8,12 +8,13 @@ import org.telegram.telegrambots.api.objects.Message
 import kotlin.reflect.KFunction1
 
 @Component
-class MessageToAdminSendProcessor(val botConfig: BotConfig) {
+class MessageToAdminSendProcessor(val botConfig: BotConfig,
+                                  val botOperations: BotOperations) {
 
     private val log = LoggerFactory.getLogger(MessageToAdminSendProcessor::class.java)
 
     fun forwardMessage(requestMessage: Message,
-             forwardMessage: KFunction1<@ParameterName(name = "forwardMessage") ForwardMessage, Message>) {
+                       forwardMessage: KFunction1<@ParameterName(name = "forwardMessage") ForwardMessage, Message>) {
 
         val forwardMessageQuery = ForwardMessage()
         val fromChatId = requestMessage.chatId
@@ -28,15 +29,14 @@ class MessageToAdminSendProcessor(val botConfig: BotConfig) {
         }
     }
 
-    fun sendMessage(text: String,
-                    sendMessage: KFunction1<@ParameterName(name = "sendMessage") SendMessage, Message>) {
+    fun sendMessage(text: String) {
 
         val sendMessageQuery = SendMessage()
         sendMessageQuery.enableMarkdown(true)
         sendMessageQuery.text = text
         sendMessageQuery.chatId = botConfig.ADMIN_CHAT_ID.toString()
         try {
-            sendMessage(sendMessageQuery)
+            botOperations.sendMessage(sendMessageQuery)
         } catch (e: Exception) {
             e.printStackTrace()
             log.error("send message error", e)
