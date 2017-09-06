@@ -17,20 +17,17 @@ class IncomingMessageHandler(val dbInfoSender: DbInfoSender,
                              val messageToUserSendProcessor: MessageFromAdminSendProcessor,
                              val startMessageSendProcessor: StartMessageSendProcessor) {
 
-    fun handleIncomingMessage(requestMessage: Message,
-                              forwardMessage: KFunction1<@ParameterName(name = "forwardMessage") ForwardMessage, Message>,
-                              sendSticker: KFunction1<@ParameterName(name = "sendSticker") SendSticker, Message>,
-                              sendDocument: KFunction1<@ParameterName(name = "sendDocument") SendDocument, Message>) {
+    fun handleIncomingMessage(requestMessage: Message) {
         when {
             requestMessage.text == "/start" -> {
                 startMessageSendProcessor.send(requestMessage)
-                messageToAdminSendProcessor.forwardMessage(requestMessage, forwardMessage)
+                messageToAdminSendProcessor.forwardMessage(requestMessage)
             }
-            requestMessage.chatId != botConfig.ADMIN_CHAT_ID -> messageToAdminSendProcessor.forwardMessage(requestMessage, forwardMessage)
+            requestMessage.chatId != botConfig.ADMIN_CHAT_ID -> messageToAdminSendProcessor.forwardMessage(requestMessage)
             requestMessage.text == "/new" -> reviewSendProcessor.sendNewReviewToChannel()
             requestMessage.text == "/dbsize" -> dbInfoSender.sendDbInfo(requestMessage)
             requestMessage.text.orEmpty().startsWith("/sendWithUrl") -> messageWithUrlSendProcessor.send(requestMessage)
-            requestMessage.replyToMessage != null -> messageToUserSendProcessor.send(requestMessage, sendSticker, sendDocument)
+            requestMessage.replyToMessage != null -> messageToUserSendProcessor.send(requestMessage)
         }
     }
 

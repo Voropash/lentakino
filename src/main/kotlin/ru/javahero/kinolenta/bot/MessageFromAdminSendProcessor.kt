@@ -19,9 +19,7 @@ class MessageFromAdminSendProcessor(val messageToAdminSendProcessor: MessageToAd
 
     private val log = LoggerFactory.getLogger(MessageFromAdminSendProcessor::class.java)
 
-    fun send(requestMessage: Message,
-             sendSticker: KFunction1<@ParameterName(name = "sendSticker") SendSticker, Message>,
-             sendDocument: KFunction1<@ParameterName(name = "sendDocument") SendDocument, Message>) {
+    fun send(requestMessage: Message) {
 
         val replyToMessage = requestMessage.replyToMessage
         val forwardFrom = replyToMessage.forwardFrom
@@ -34,7 +32,7 @@ class MessageFromAdminSendProcessor(val messageToAdminSendProcessor: MessageToAd
                 val document = requestMessage.document
                 sendDocumentQuery.document = document.fileId
                 sendDocumentQuery.chatId = stringUserId
-                sendDocument(sendDocumentQuery)
+                botOperations.sendDocument(sendDocumentQuery)
             }
             if (requestMessage.hasPhoto()) {
                 val sendPhotoQuery = SendPhoto()
@@ -49,7 +47,7 @@ class MessageFromAdminSendProcessor(val messageToAdminSendProcessor: MessageToAd
                 val sendStickerQuery = SendSticker()
                 sendStickerQuery.chatId = stringUserId
                 sendStickerQuery.sticker = sticker.fileId
-                sendSticker(sendStickerQuery)
+                botOperations.sendSticker(sendStickerQuery)
             }
             if (requestMessage.text != null) {
                 val sendMessageQuery = SendMessage()
