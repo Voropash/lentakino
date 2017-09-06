@@ -13,8 +13,7 @@ class MessageToAdminSendProcessor(val botConfig: BotConfig,
 
     private val log = LoggerFactory.getLogger(MessageToAdminSendProcessor::class.java)
 
-    fun forwardMessage(requestMessage: Message,
-                       forwardMessage: KFunction1<@ParameterName(name = "forwardMessage") ForwardMessage, Message>) {
+    fun forwardMessage(requestMessage: Message) {
 
         val forwardMessageQuery = ForwardMessage()
         val fromChatId = requestMessage.chatId
@@ -22,7 +21,7 @@ class MessageToAdminSendProcessor(val botConfig: BotConfig,
         forwardMessageQuery.messageId = requestMessage.messageId
         forwardMessageQuery.chatId = botConfig.ADMIN_CHAT_ID.toString()
         try {
-            forwardMessage(forwardMessageQuery)
+            botOperations.forwardMessage(forwardMessageQuery)
         } catch (e: Exception) {
             e.printStackTrace()
             log.error("forward message error", e)
