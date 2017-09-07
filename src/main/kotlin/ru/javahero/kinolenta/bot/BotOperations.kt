@@ -1,6 +1,7 @@
 package ru.javahero.kinolenta.bot
 
 import org.springframework.stereotype.Component
+import org.telegram.telegrambots.api.methods.AnswerCallbackQuery
 import org.telegram.telegrambots.api.methods.ForwardMessage
 import org.telegram.telegrambots.api.methods.send.SendDocument
 import org.telegram.telegrambots.api.methods.send.SendMessage
@@ -17,4 +18,5 @@ class BotOperations {
     lateinit var forwardMessage: (ForwardMessage) -> Message
     lateinit var sendSticker: (SendSticker) -> Message
     lateinit var sendDocument: (SendDocument) -> Message
+    lateinit var answerCallbackQuery: (AnswerCallbackQuery) -> Boolean
 }

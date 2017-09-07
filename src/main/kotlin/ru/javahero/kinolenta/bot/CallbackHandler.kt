@@ -17,12 +17,12 @@ import kotlin.reflect.KFunction1
 class CallbackHandler(val botConfig: BotConfig,
                       val reviewTextRepository: ReviewTextRepository,
                       val reviewRatingRepository: ReviewRatingRepository,
+                      val botOperations: BotOperations,
                       val likeKeyboard: LikeKeyboard) {
 
     private val log = LoggerFactory.getLogger(CallbackHandler::class.java)
 
     fun handleLikeCallback(callbackQuery: CallbackQuery,
-                           answerCallbackQuery: KFunction1<@ParameterName(name = "answerCallbackQuery") AnswerCallbackQuery, Boolean>,
                            editMessageText: KFunction1<@ParameterName(name = "editMessageText") EditMessageText, Serializable>) {
         val message = callbackQuery.message
         val chatId = message.chatId
@@ -33,7 +33,7 @@ class CallbackHandler(val botConfig: BotConfig,
         val callbackQuerryId = callbackQuery.id
         val callbackValue = callbackQuery.data.split(";")
 
-        fastLikeProcess(callbackValue, chatId, messageId, text, callbackQuerryId, answerCallbackQuery, editMessageText)
+        fastLikeProcess(callbackValue, chatId, messageId, text, callbackQuerryId, editMessageText)
         smartLikeProcess(messageId, userId, callbackValue, chatId, text, editMessageText)
     }
 
@@ -42,7 +42,6 @@ class CallbackHandler(val botConfig: BotConfig,
                                 messageId: Int?,
                                 text: String?,
                                 callbackQuerryId: String?,
-                                answerCallbackQuery: KFunction1<@ParameterName(name = "answerCallbackQuery") AnswerCallbackQuery, Boolean>,
                                 editMessageText: KFunction1<@ParameterName(name = "editMessageText") EditMessageText, Serializable>) {
         var keyboardMarkup = InlineKeyboardMarkup()
         if (callbackValue[0] == botConfig.LIKE_VALUE) {
@@ -55,7 +54,7 @@ class CallbackHandler(val botConfig: BotConfig,
                 .setCallbackQueryId(callbackQuerryId)
                 .setText("Ваш голос учтен")
                 .setShowAlert(false)
-        answerCallbackQuery(answerCallbackQueryQuery)
+        botOperations.answerCallbackQuery(answerCallbackQueryQuery)
 
         val editMessageTextQuery = EditMessageText()
                 .setChatId(chatId)

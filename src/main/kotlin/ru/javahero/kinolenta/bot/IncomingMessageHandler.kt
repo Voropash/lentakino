@@ -1,12 +1,8 @@
 package ru.javahero.kinolenta.bot
 
 import org.springframework.stereotype.Controller
-import org.telegram.telegrambots.api.methods.ForwardMessage
-import org.telegram.telegrambots.api.methods.send.SendDocument
-import org.telegram.telegrambots.api.methods.send.SendSticker
 import org.telegram.telegrambots.api.objects.Message
 import ru.javahero.kinolenta.bot.util.admin.DbInfoSender
-import kotlin.reflect.KFunction1
 
 @Controller
 class IncomingMessageHandler(val dbInfoSender: DbInfoSender,
