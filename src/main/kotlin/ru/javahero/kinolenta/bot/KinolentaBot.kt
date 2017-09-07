@@ -27,6 +27,7 @@ class KinolentaBot(val botConfig: BotConfig,
         botOperations.forwardMessage = this::forwardMessage
         botOperations.sendSticker = this::sendSticker
         botOperations.sendDocument = this::sendDocument
+        botOperations.answerCallbackQuery = this::answerCallbackQuery
     }
 
     override fun getBotUsername(): String {
@@ -44,7 +45,7 @@ class KinolentaBot(val botConfig: BotConfig,
             if (message != null) {
                 incomingMessageHandler.handleIncomingMessage(message)
             } else if (callbackQuery != null && callbackQuery.data != null) {
-                callbackHandler.handleLikeCallback(callbackQuery, this::answerCallbackQuery, this::editMessageText)
+                callbackHandler.handleLikeCallback(callbackQuery, this::editMessageText)
             }
         } catch (e: Exception) {
             log.error("Internal error", e)
