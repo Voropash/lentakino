@@ -1,0 +1,186 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="x-ua-compatible" content="ie=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title th:text="${post.title}"></title>
+    <meta property="og:type" content="article"/>
+    <meta property="og:title" th:content="${post.title}"/>
+    <meta property="og:description" th:content="${post.title}"/>
+    <meta property="og:site_name" content="TelegramJournal"/>
+    <meta property="og:image" th:content="${post.image}"/>
+    <meta itemscope="" itemtype="article"/>
+    <meta itemprop="description" th:content="${post.title}"/>
+    <meta itemprop="image" th:content="${post.image}"/>
+
+    <link rel="icon" href="/cropped-square-32x32.png" sizes="32x32"/>
+    <link rel="icon" href="/cropped-square-192x192.png" sizes="192x192"/>
+    <link rel="apple-touch-icon-precomposed" href="/cropped-square-180x180.png"/>
+    <meta name="msapplication-TileImage" content="/cropped-square-270x270.png"/>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Exo+2');
+
+        body {
+            font-family: 'Exo 2', sans-serif;
+            margin: 0 0 0 0;
+        }
+
+        a {
+            color: #999;
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: #097cc2;
+        }
+
+        h1 {
+            -webkit-margin-after: 0;
+            font-size: 2.5em;
+        }
+
+        h2 {
+            -webkit-margin-after: 0;
+            font-size: 2em;
+        }
+
+        .read-more {
+            background-color: #049dcc;
+            color: white;
+            padding: 10px 25px;
+            text-decoration: none;
+        }
+
+        .read-more:hover {
+            background-color: #0c6186;
+            color: white;
+        }
+
+        .footer-info {
+            background-color: #049dcc;
+            color: white;
+        }
+
+        .links {
+            color: #8e8e8e;
+            text-decoration: none;
+        }
+
+        .footer-link {
+            display: block;
+            padding: 20px;
+            color: white;
+            font-size: 1.3em;
+        }
+
+        .footer-link:hover {
+            color: #ddd;
+        }
+
+        .footer-elem {
+            float: left;
+        }
+
+        .footer-copyright {
+            padding: 0 50px 30px;
+            font-size: 1.5em;
+        }
+
+    </style>
+
+    <!-- Yandex.Metrika counter -->
+    <script type="text/javascript" >
+        (function (d, w, c) {
+            (w[c] = w[c] || []).push(function() {
+                try {
+                    w.yaCounter46283826 = new Ya.Metrika({
+                        id:46283826,
+                        clickmap:true,
+                        trackLinks:true,
+                        accurateTrackBounce:true
+                    });
+                } catch(e) { }
+            });
+
+            var n = d.getElementsByTagName("script")[0],
+                s = d.createElement("script"),
+                f = function () { n.parentNode.insertBefore(s, n); };
+            s.type = "text/javascript";
+            s.async = true;
+            s.src = "https://mc.yandex.ru/metrika/watch.js";
+
+            if (w.opera == "[object Opera]") {
+                d.addEventListener("DOMContentLoaded", f, false);
+            } else { f(); }
+        })(document, window, "yandex_metrika_callbacks");
+    </script>
+    <noscript><div><img src="https://mc.yandex.ru/watch/46283826" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+    <!-- /Yandex.Metrika counter -->
+
+</head>
+<body>
+
+<div th:include="header :: header"></div>
+<div class="body">
+    <div class="body-content" style="text-align: center">
+        <div class="header-center"
+             style="text-align: left; max-width: 910px; margin: 0 auto;">
+
+            <div style="text-align: center; padding: 0 15px;">
+                <h1>
+                    <a style="color:black" th:href="${'/post/' + post.id}" th:text="${post.title}">Заголовок</a>
+                </h1>
+            </div>
+
+            <div style="text-align: center; padding: 8px 0 13px;">
+                <a class="links" href="#" th:text="${post.date}">Date</a>
+                &nbsp;
+                <a class="links" href="#" th:text="${'@' + post.channel}">Channel</a>
+            </div>
+
+            <div style="text-align: center">
+                <img th:hidden="${post.image eq null}"
+                     th:src="${post.image}"
+                     style="max-width: 100%; max-height:640px; padding-bottom: 25px"/>
+                <article style="text-align: justify; line-height: 1.8;padding-left: 15px;padding-right: 15px;"
+                         th:utext="${post.text}">
+                    Текст
+                </article>
+            </div>
+
+            <div style="text-align: center">
+                <div style="padding:35px"><a class="read-more" th:text="${'@' + post.channel}">Читать в Telegram</a>
+                </div>
+            </div>
+
+            <div id="disqus_thread" style="padding: 0 10px 20px;"></div>
+            <script>
+
+                /**
+                 *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+                 *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+                /*
+                var disqus_config = function () {
+                this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+                this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                };
+                */
+                (function () { // DON'T EDIT BELOW THIS LINE
+                    var d = document, s = d.createElement('script');
+                    s.src = 'https://telegramjournal.disqus.com/embed.js';
+                    s.setAttribute('data-timestamp', +new Date());
+                    (d.head || d.body).appendChild(s);
+                })();
+            </script>
+            <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript"
+                                                              style="padding-bottom: 20px">comments powered by
+                Disqus.</a></noscript>
+
+        </div>
+    </div>
+</div>
+<div th:include="footer :: footer"></div>
+</body>
+</html>

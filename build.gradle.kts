@@ -35,6 +35,7 @@ repositories {
 dependencies {
 	compile("org.springframework.boot:spring-boot-starter-web")
 	compile("org.springframework.boot:spring-boot-starter-data-jpa")
+	compile("org.springframework.boot:spring-boot-starter-thymeleaf")
 	compile("org.jetbrains.kotlin:kotlin-stdlib:1.1.4-2")
 	compile("org.jetbrains.kotlin:kotlin-reflect:1.1.4-2")
 	compile("com.fasterxml.jackson.module:jackson-module-kotlin")
